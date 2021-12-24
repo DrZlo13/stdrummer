@@ -7,5 +7,5 @@
 
 void app_main(void) {
     hal_init();
-    uart_debug.transmit("UART2/DEBUG\r\n");
+    uart_debug.transmit("UART1/DEBUG\r\n");
 }

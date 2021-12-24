@@ -1,5 +1,5 @@
-#include "hal-gpio.h"
-#include "hal-uart.h"
+#include "modules/hal-gpio.h"
+#include "modules/hal-uart.h"
 
 #include "hal-resources.h"
 

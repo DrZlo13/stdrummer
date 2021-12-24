@@ -38,20 +38,17 @@ file(GLOB TARGET_SOURCES
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd.c
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_pcd_ex.c
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.c
-
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s.c
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2s_ex.c
-	# ${TARGET_SOURCE_DIR}/USB/usb_interrupts.c
-	# ${TARGET_SOURCE_DIR}/USB/Device/App/usb_device.c
-	# ${TARGET_SOURCE_DIR}/USB/Device/App/usbd_desc.c
-	# ${TARGET_SOURCE_DIR}/USB/Device/App/usbd_cdc_if.c
-	# ${TARGET_SOURCE_DIR}/USB/Device/Target/usbd_conf.c
-	# ${TARGET_SOURCE_DIR}/USB/STM32_USB_Device_Library/Core/Src/usbd_core.c
-	# ${TARGET_SOURCE_DIR}/USB/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
-	# ${TARGET_SOURCE_DIR}/USB/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
-	# ${TARGET_SOURCE_DIR}/USB/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
-	# ${CMAKE_SOURCE_DIR}/lib/usb_midi_device/usbd_midi.c
-	# ${CMAKE_SOURCE_DIR}/lib/usb_midi_device/usbd_midi_if.c
+
+	${TARGET_SOURCE_DIR}/FATFS/Target/bsp_driver_sd.c
+	${TARGET_SOURCE_DIR}/FATFS/Target/sd_diskio.c
+	${TARGET_SOURCE_DIR}/FATFS/Target/fatfs_platform.c
+	${TARGET_SOURCE_DIR}/FATFS/App/fatfs.c
+	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/diskio.c
+	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/ff.c
+	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/ff_gen_drv.c
+	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/option/syscall.c
 )
 
 # Look here for header files.
@@ -61,10 +58,9 @@ set(TARGET_DIRECTORIES
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Inc/Legacy
 	${TARGET_SOURCE_DIR}/Drivers/CMSIS/Device/ST/STM32F4xx/Include
 	${TARGET_SOURCE_DIR}/Drivers/CMSIS/Include
-	${TARGET_SOURCE_DIR}/USB/Device/App
-	${TARGET_SOURCE_DIR}/USB/Device/Target
-	${TARGET_SOURCE_DIR}/USB/STM32_USB_Device_Library/Core/Inc
-	# ${TARGET_SOURCE_DIR}/USB/STM32_USB_Device_Library/Class/CDC/Inc
+	${TARGET_SOURCE_DIR}/FATFS/Target
+	${TARGET_SOURCE_DIR}/FATFS/App
+	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src
     ${TARGET_SOURCE_DIR}
 )
 
