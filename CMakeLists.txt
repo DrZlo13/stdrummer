@@ -33,18 +33,9 @@ include_directories(${INCLUDE_DIRECTORIES})
 include_directories(${CMAKE_SOURCE_DIR}/app)
 include_directories(${CMAKE_SOURCE_DIR}/lib)
 
-file(GLOB CORE_SOURCES 
-    "app/*.c"
-    "app/*.cpp"
-    "app/*/*.c"
-    "app/*/*.cpp"
-    "app/*/*/*.c"
-    "app/*/*/*.cpp"
-    "app/*/*/*/*/*.c"
-    "app/*/*/*/*/*.cpp"
-)
+file(GLOB_RECURSE CORE_SOURCES "app/*.c" "app/*.cpp")
 
-set(SOURCES 
+set(SOURCES
     ${SOURCES} 
     ${CORE_SOURCES} 
 )

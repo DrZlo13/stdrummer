@@ -8,4 +8,6 @@
 void app_main(void) {
     hal_init();
     uart_debug.transmit("UART1/DEBUG\r\n");
+
+    i2s_dac.start();
 }
