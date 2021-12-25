@@ -25,19 +25,44 @@ find_program(SIZE NAMES ${STM32_TARGET_TRIPLET}-size PATHS ${TOOLCHAIN_BIN_PATH}
 
 
 # project start
-PROJECT("Black-MIDI2CV" C CXX ASM)
+PROJECT("stdrummer" C CXX ASM)
 
 add_subdirectory(${TARGET_PATH})
 
 include_directories(${INCLUDE_DIRECTORIES})
 include_directories(${CMAKE_SOURCE_DIR}/app)
 include_directories(${CMAKE_SOURCE_DIR}/lib)
+include_directories(${CMAKE_SOURCE_DIR}/lib/u8g2/csrc)
 
 file(GLOB_RECURSE CORE_SOURCES "app/*.c" "app/*.cpp")
 
+file(GLOB U8G2_SOURCES 
+    "lib/u8g2/csrc/u8x8_d_st7565.c"
+    "lib/u8g2/csrc/u8g2_d_setup.c"
+    "lib/u8g2/csrc/u8g2_intersection.c"
+    "lib/u8g2/csrc/u8g2_setup.c"
+    "lib/u8g2/csrc/u8g2_d_memory.c"
+    "lib/u8g2/csrc/u8x8_cad.c"
+    "lib/u8g2/csrc/u8x8_byte.c"
+    "lib/u8g2/csrc/u8x8_gpio.c"
+    "lib/u8g2/csrc/u8x8_display.c"
+    "lib/u8g2/csrc/u8x8_setup.c"
+    "lib/u8g2/csrc/u8g2_hvline.c"
+    "lib/u8g2/csrc/u8g2_ll_hvline.c"
+    "lib/u8g2/csrc/u8g2_circle.c"
+    "lib/u8g2/csrc/u8g2_box.c"
+    "lib/u8g2/csrc/u8g2_buffer.c"
+    "lib/u8g2/csrc/u8g2_font.c"
+    "lib/u8g2/csrc/u8g2_fonts.c"
+    "lib/u8g2/csrc/u8x8_8x8.c"
+    "lib/u8g2/csrc/u8g2_bitmap.c"
+    "lib/u8g2/csrc/u8g2_line.c"
+)
+
 set(SOURCES
-    ${SOURCES} 
-    ${CORE_SOURCES} 
+    ${SOURCES}
+    ${CORE_SOURCES}
+    ${U8G2_SOURCES}
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})

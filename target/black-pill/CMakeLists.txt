@@ -49,6 +49,10 @@ file(GLOB TARGET_SOURCES
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/ff.c
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/ff_gen_drv.c
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/option/syscall.c
+	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FatFs/src/option/ccsbcs.c
+
+	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c
+	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c
 )
 
 # Look here for header files.

@@ -15,7 +15,7 @@ HalI2S::HalI2S(I2S_HandleTypeDef* i2s) {
         //buffer[i] = (i / 2) * (UINT_LEAST16_MAX / 512) - UINT_LEAST16_MAX / 2;
 
         // sine
-        buffer[i] = sin(i * (pi / 512)) * (UINT_LEAST16_MAX / 2);
+        buffer[i] = sin(i * (pi / 128)) * (UINT_LEAST16_MAX / 2);
     }
 }
 

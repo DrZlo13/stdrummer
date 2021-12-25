@@ -7,10 +7,9 @@ constexpr inline uint8_t GPIO_COUNT = 16;
 
 class HalGpio {
 private:
+    DISALLOW_COPY_AND_ASSIGN(HalGpio);
     GPIO_TypeDef* port;
     uint16_t pin;
-
-    DISALLOW_COPY_AND_ASSIGN(HalGpio);
 
 public:
     enum class Mode {

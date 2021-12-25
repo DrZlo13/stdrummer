@@ -6,8 +6,8 @@
 
 class HalUart {
 private:
-    USART_TypeDef* uart;
     DISALLOW_COPY_AND_ASSIGN(HalUart);
+    USART_TypeDef* uart;
 
 public:
     enum class Event {
