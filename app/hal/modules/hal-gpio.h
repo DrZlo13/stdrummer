@@ -1,6 +1,6 @@
 #pragma once
 #include <stdint.h>
-#include "helper.h"
+#include <helper.h>
 #include <stm32f4xx_ll_gpio.h>
 
 constexpr inline uint8_t GPIO_COUNT = 16;

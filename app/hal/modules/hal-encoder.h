@@ -1,6 +1,6 @@
 #pragma once
 #include <main.h>
-#include "helper.h"
+#include <helper.h>
 
 class HalEncoder {
 private:
@@ -12,4 +12,5 @@ public:
     ~HalEncoder();
     void start();
     uint32_t get();
+    void reset();
 };

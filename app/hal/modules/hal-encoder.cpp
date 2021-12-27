@@ -14,3 +14,7 @@ void HalEncoder::start() {
 uint32_t HalEncoder::get() {
     return this->tim->Instance->CNT;
 }
+
+void HalEncoder::reset() {
+    this->tim->Instance->CNT = 0;
+}

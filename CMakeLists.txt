@@ -29,10 +29,12 @@ PROJECT("stdrummer" C CXX ASM)
 
 add_subdirectory(${TARGET_PATH})
 
-include_directories(${INCLUDE_DIRECTORIES})
-include_directories(${CMAKE_SOURCE_DIR}/app)
-include_directories(${CMAKE_SOURCE_DIR}/lib)
-include_directories(${CMAKE_SOURCE_DIR}/lib/u8g2/csrc)
+include_directories("${INCLUDE_DIRECTORIES}")
+include_directories("${CMAKE_SOURCE_DIR}/app")
+include_directories("${CMAKE_SOURCE_DIR}/lib")
+include_directories("${CMAKE_SOURCE_DIR}/lib/etl/include")
+include_directories("${CMAKE_SOURCE_DIR}/app/core")
+include_directories("${CMAKE_SOURCE_DIR}/app/gfx")
 
 file(GLOB_RECURSE CORE_SOURCES "app/*.c" "app/*.cpp")
 

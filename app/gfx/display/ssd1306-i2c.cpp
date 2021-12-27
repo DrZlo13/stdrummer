@@ -1,39 +1,55 @@
-#include "hal-display.h"
-#include "../hal.h"
-#include "../../core/core.h"
+#include <main.h>
+#include <core.h>
+#include <string.h>
+#include "ssd1306-i2c.h"
 
-void HalDisplay::ssd1306_command(uint8_t command) {
+void SSD1306_I2C::ssd1306_command(uint8_t command) {
     HAL_I2C_Mem_Write(this->i2c, ssd1306_addr, 0x00, 1, &command, 1, HAL_MAX_DELAY);
 }
 
-void HalDisplay::ssd1306_data(uint8_t* buffer, size_t buff_size) {
-    HAL_I2C_Mem_Write(this->i2c, ssd1306_addr, 0x40, 1, buffer, buff_size, HAL_MAX_DELAY);
+void SSD1306_I2C::ssd1306_data(uint8_t* buffer, size_t buff_size) {
+    HAL_I2C_Mem_Write_DMA(this->i2c, ssd1306_addr, 0x40, 1, buffer, buff_size);
 }
 
-void HalDisplay::ssd1306_set_contrast(const uint8_t value) {
+void SSD1306_I2C::set_brightness(uint8_t value) {
     ssd1306_command(0x81);
     ssd1306_command(value);
 }
 
-void HalDisplay::fill(Color color) {
-    /* Set memory */
-    uint32_t i;
+void SSD1306_I2C::fill(Color color) {
+    memset(ssd1306_buffer, (color == Color::Black) ? 0x00 : 0xFF, ssd1306_buffer_size);
+}
 
-    for(i = 0; i < sizeof(ssd1306_buffer); i++) {
-        ssd1306_buffer[i] = (color == Color::Black) ? 0x00 : 0xFF;
+void SSD1306_I2C::flush(void) {
+    // TODO back buffer
+    // set page start address for page addressing mode to 0
+    ssd1306_command(0xB0);
+    ssd1306_command(0x00);
+    ssd1306_command(0x10);
+    ssd1306_data(ssd1306_buffer, ssd1306_buffer_size);
+}
+
+bool SSD1306_I2C::flush_completed() {
+    return HAL_I2C_GetState(this->i2c) == HAL_I2C_STATE_READY;
+}
+
+void SSD1306_I2C::set_pixel(int32_t x, int32_t y, Color color) {
+    if(x < 0 || y < 0) {
+        return;
+    }
+
+    if((size_t)x >= width || (size_t)y >= height) {
+        return;
+    }
+
+    if(color == Color::White) {
+        ssd1306_buffer[x + (y / 8) * width] |= 1 << (y % 8);
+    } else {
+        ssd1306_buffer[x + (y / 8) * width] &= ~(1 << (y % 8));
     }
 }
 
-void HalDisplay::flush(void) {
-    for(uint8_t i = 0; i < ssd1306_height / 8; i++) {
-        ssd1306_command(0xB0 + i); // Set the current RAM page address.
-        ssd1306_command(0x00);
-        ssd1306_command(0x10);
-        ssd1306_data(&ssd1306_buffer[ssd1306_width * i], ssd1306_width);
-    }
-}
-
-void HalDisplay::ssd1306_set_display_on(const uint8_t on) {
+void SSD1306_I2C::set_display_on(bool on) {
     if(on) {
         // Display on
         ssd1306_command(0xAF);
@@ -43,19 +59,19 @@ void HalDisplay::ssd1306_set_display_on(const uint8_t on) {
     }
 }
 
-HalDisplay::HalDisplay(I2C_HandleTypeDef* i2c) {
+SSD1306_I2C::SSD1306_I2C(I2C_HandleTypeDef* i2c) {
     this->i2c = i2c;
 }
 
-HalDisplay::~HalDisplay() {
+SSD1306_I2C::~SSD1306_I2C() {
 }
 
-void HalDisplay::start(bool mirror_v, bool mirror_h, bool inverse) {
+void SSD1306_I2C::start(bool mirror_v, bool mirror_h, bool inverse) {
     // Wait for the screen to boot
     HAL_Delay(100);
 
     // Display off
-    ssd1306_set_display_on(0);
+    set_display_on(false);
 
     //Set Memory Addressing Mode
     ssd1306_command(0x20);
@@ -79,7 +95,7 @@ void HalDisplay::start(bool mirror_v, bool mirror_h, bool inverse) {
     ssd1306_command(0x10); //---set high column address
     ssd1306_command(0x40); //--set start line address - CHECK
 
-    ssd1306_set_contrast(0xFF);
+    set_brightness(0xFF);
 
     if(mirror_h) {
         // Mirror horizontally
@@ -98,7 +114,7 @@ void HalDisplay::start(bool mirror_v, bool mirror_h, bool inverse) {
     }
 
     // Set multiplex ratio.
-    if(ssd1306_height == 128) {
+    if(height == 128) {
         // Found in the Luma Python lib for SH1106.
         ssd1306_command(0xFF);
     } else {
@@ -106,7 +122,7 @@ void HalDisplay::start(bool mirror_v, bool mirror_h, bool inverse) {
         ssd1306_command(0xA8);
     }
 
-    switch(ssd1306_height) {
+    switch(height) {
     case 32:
         ssd1306_command(0x1F);
         break;
@@ -138,7 +154,7 @@ void HalDisplay::start(bool mirror_v, bool mirror_h, bool inverse) {
 
     ssd1306_command(0xDA); //--set com pins hardware configuration - CHECK
 
-    switch(ssd1306_height) {
+    switch(height) {
     case 32:
         ssd1306_command(0x02);
         break;
@@ -158,7 +174,7 @@ void HalDisplay::start(bool mirror_v, bool mirror_h, bool inverse) {
 
     ssd1306_command(0x8D); //--set DC-DC enable
     ssd1306_command(0x14); //
-    ssd1306_set_display_on(1);
+    set_display_on(true);
 
     // Clear screen
     fill(Color::White);
