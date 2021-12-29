@@ -35,6 +35,7 @@ include_directories("${CMAKE_SOURCE_DIR}/lib")
 include_directories("${CMAKE_SOURCE_DIR}/lib/etl/include")
 include_directories("${CMAKE_SOURCE_DIR}/app/core")
 include_directories("${CMAKE_SOURCE_DIR}/app/gfx")
+include_directories("${CMAKE_SOURCE_DIR}/app/filesystem")
 
 file(GLOB_RECURSE CORE_SOURCES "app/*.c" "app/*.cpp")
 

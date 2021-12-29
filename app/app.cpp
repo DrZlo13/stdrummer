@@ -33,7 +33,7 @@ void app_main(void) {
 
     while(1) {
         angle -= encoder.get();
-        // encoder.reset();
+        encoder.reset();
 
         Color color_front = Color::White;
         Color color_back = Color::Black;
