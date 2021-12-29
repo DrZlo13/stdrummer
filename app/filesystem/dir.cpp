@@ -49,6 +49,22 @@ bool Dir::read(FileInfo& fileinfo) {
     return (_error == FR_OK && fileinfo._fileinfo.fname[0] != 0);
 }
 
+bool Dir::read_filter_by_ext(FileInfo& fileinfo, std::string_view ext) {
+    bool found = false;
+
+    do {
+        if(!read(fileinfo)) break;
+        if(fileinfo.is_dir()) continue;
+        std::string name = fileinfo.name();
+        if(name.length() < ext.length()) continue;
+        std::string::size_type idx = name.rfind('.');
+        if(idx == std::string::npos) continue;
+        if(name.substr(idx + 1) == ext) found = true;
+    } while(found == false);
+
+    return (_error == FR_OK && fileinfo._fileinfo.fname[0] != 0);
+}
+
 uint32_t Dir::error() {
     return _error;
 }
