@@ -74,6 +74,8 @@ void Error_Handler(void);
 #define LED_PIN_GPIO_Port GPIOC
 #define SD_DET_Pin LL_GPIO_PIN_3
 #define SD_DET_GPIO_Port GPIOA
+#define DISPLAY_POWER_Pin LL_GPIO_PIN_2
+#define DISPLAY_POWER_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */

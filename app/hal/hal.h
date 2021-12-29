@@ -6,5 +6,3 @@
 #include "modules/hal-encoder.h"
 
 #include "hal-resources.h"
-
-void hal_init(void);

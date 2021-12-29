@@ -20,7 +20,7 @@ void hal_init(void) {
 void app_main(void) {
     hal_init();
     Log::reset();
-    Log::info("System start");
+    Log::info("System start at " GIT_BRANCH "/" GIT_COMMIT);
 
     // i2s_dac.start();
     storage.start();
