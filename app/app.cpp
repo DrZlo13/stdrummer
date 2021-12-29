@@ -2,7 +2,8 @@
 #include <main.h>
 #include <string>
 #include "hal/hal.h"
-#include "core/core.h"
+#include <log.h>
+#include <core.h>
 #include <etl/array.h>
 #include "gfx/gfx-export.h"
 
@@ -18,10 +19,11 @@ void hal_init(void) {
 
 void app_main(void) {
     hal_init();
-    uart_debug.transmit("UART1/DEBUG\r\n");
+    Log::reset();
+    Log::info("System start");
 
     // i2s_dac.start();
-    // storage.start();
+    storage.start();
     gfx.start(false, false, false);
     encoder.start();
 
