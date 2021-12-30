@@ -33,6 +33,7 @@ include_directories("${INCLUDE_DIRECTORIES}")
 include_directories("${CMAKE_SOURCE_DIR}/app")
 include_directories("${CMAKE_SOURCE_DIR}/lib")
 include_directories("${CMAKE_SOURCE_DIR}/lib/etl/include")
+include_directories("${CMAKE_SOURCE_DIR}/lib/fmt/include")
 include_directories("${CMAKE_SOURCE_DIR}/app/core")
 include_directories("${CMAKE_SOURCE_DIR}/app/gfx")
 include_directories("${CMAKE_SOURCE_DIR}/app/filesystem")
@@ -40,48 +41,48 @@ include_directories("${CMAKE_SOURCE_DIR}/app/filesystem")
 file(GLOB_RECURSE CORE_SOURCES "app/*.c" "app/*.cpp")
 
 file(GLOB U8G2_SOURCES 
-    "lib/u8g2/csrc/u8x8_d_st7565.c"
-    "lib/u8g2/csrc/u8g2_d_setup.c"
-    "lib/u8g2/csrc/u8g2_intersection.c"
-    "lib/u8g2/csrc/u8g2_setup.c"
-    "lib/u8g2/csrc/u8g2_d_memory.c"
-    "lib/u8g2/csrc/u8x8_cad.c"
-    "lib/u8g2/csrc/u8x8_byte.c"
-    "lib/u8g2/csrc/u8x8_gpio.c"
-    "lib/u8g2/csrc/u8x8_display.c"
-    "lib/u8g2/csrc/u8x8_setup.c"
-    "lib/u8g2/csrc/u8g2_hvline.c"
-    "lib/u8g2/csrc/u8g2_ll_hvline.c"
-    "lib/u8g2/csrc/u8g2_circle.c"
-    "lib/u8g2/csrc/u8g2_box.c"
-    "lib/u8g2/csrc/u8g2_buffer.c"
-    "lib/u8g2/csrc/u8g2_font.c"
-    "lib/u8g2/csrc/u8g2_fonts.c"
-    "lib/u8g2/csrc/u8x8_8x8.c"
-    "lib/u8g2/csrc/u8g2_bitmap.c"
-    "lib/u8g2/csrc/u8g2_line.c"
+"lib/u8g2/csrc/u8x8_d_st7565.c"
+"lib/u8g2/csrc/u8g2_d_setup.c"
+"lib/u8g2/csrc/u8g2_intersection.c"
+"lib/u8g2/csrc/u8g2_setup.c"
+"lib/u8g2/csrc/u8g2_d_memory.c"
+"lib/u8g2/csrc/u8x8_cad.c"
+"lib/u8g2/csrc/u8x8_byte.c"
+"lib/u8g2/csrc/u8x8_gpio.c"
+"lib/u8g2/csrc/u8x8_display.c"
+"lib/u8g2/csrc/u8x8_setup.c"
+"lib/u8g2/csrc/u8g2_hvline.c"
+"lib/u8g2/csrc/u8g2_ll_hvline.c"
+"lib/u8g2/csrc/u8g2_circle.c"
+"lib/u8g2/csrc/u8g2_box.c"
+"lib/u8g2/csrc/u8g2_buffer.c"
+"lib/u8g2/csrc/u8g2_font.c"
+"lib/u8g2/csrc/u8g2_fonts.c"
+"lib/u8g2/csrc/u8x8_8x8.c"
+"lib/u8g2/csrc/u8g2_bitmap.c"
+"lib/u8g2/csrc/u8g2_line.c"
 )
 
 set(SOURCES
-    ${SOURCES}
-    ${CORE_SOURCES}
-    ${U8G2_SOURCES}
+${SOURCES}
+${CORE_SOURCES}
+${U8G2_SOURCES}
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 
 target_compile_options(${PROJECT_NAME}.elf PRIVATE 
-    -mcpu=cortex-m4
-    -Og
-    -g
-    -Wall
-    -ffunction-sections
-    -fdata-sections
-    -fstack-usage
-    -fno-math-errno
-    -MMD
-    -MP
-    --specs=nano.specs
+-mcpu=cortex-m4
+-Og
+-g
+-Wall
+-ffunction-sections
+-fdata-sections
+-fstack-usage
+-fno-math-errno
+-MMD
+-MP
+--specs=nano.specs
     -mfpu=fpv4-sp-d16
     -mfloat-abi=hard
     -mthumb
@@ -120,6 +121,42 @@ target_link_options(${PROJECT_NAME}.elf PRIVATE
     #-Wl,--wrap,_calloc_r
     #-Wl,--wrap,_realloc_r
 )
+
+add_subdirectory("${CMAKE_SOURCE_DIR}/lib/fmt")
+target_compile_definitions(fmt
+  PUBLIC
+  FMT_STATIC_THOUSANDS_SEPARATOR=0
+  FMT_USE_FLOAT=0
+  FMT_USE_DOUBLE=0
+  FMT_USE_LONG_DOUBLE=0
+  FMT_REDUCE_INT_INSTANTIATIONS=0
+)
+target_compile_options(fmt PRIVATE 
+    -mcpu=cortex-m4
+    -Og
+    -g
+    -Wall
+    -ffunction-sections
+    -fdata-sections
+    -fstack-usage
+    -fno-math-errno
+    -MMD
+    -MP
+    --specs=nano.specs
+    -mfpu=fpv4-sp-d16
+    -mfloat-abi=hard
+    -mthumb
+    -u _printf_float
+    $<$<COMPILE_LANGUAGE:C>:-std=gnu2x>
+    $<$<COMPILE_LANGUAGE:C>:-Wenum-conversion>
+    $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++20>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-atexit>
+    $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
+    $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
+)
+target_link_libraries(${PROJECT_NAME}.elf PRIVATE fmt)
 
 set(COMMON_FLAGS
     USE_HAL_DRIVER
