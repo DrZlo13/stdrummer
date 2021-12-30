@@ -25,6 +25,8 @@ void info(std::string_view message);
 
 void log(std::string_view message);
 
+void newline();
+
 void reset();
 
 }

@@ -14,7 +14,7 @@ bool File::open(std::string_view _path, Access _access, Mode _mode) {
     normalize_path(normalized_path);
 
     do {
-        if(PathHolder::contain(&this->path)) {
+        if(PathHolder::contain(&normalized_path)) {
             _error = FR_LOCKED;
             break;
         }
@@ -87,4 +87,8 @@ bool File::seek(int64_t offset, bool from_start) {
 
 uint32_t File::tell() {
     return f_tell(&_file);
+}
+
+bool File::eof() {
+    return f_eof(&_file);
 }

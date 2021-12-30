@@ -1,5 +1,6 @@
 #include <set>
 #include <string>
+#include <log.h>
 #include "path_holder.h"
 
 namespace PathHolder {

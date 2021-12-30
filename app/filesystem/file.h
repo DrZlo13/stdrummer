@@ -13,8 +13,9 @@ private:
 
 public:
     enum class Access : uint8_t {
-        Write = FA_WRITE,
         Read = FA_READ,
+        Write = FA_WRITE,
+        ReadWrite = FA_READ | FA_WRITE,
     };
 
     enum class Mode : uint8_t {
@@ -40,4 +41,5 @@ public:
     uint32_t write(const uint8_t* data, uint32_t data_size);
     bool seek(int64_t offset, bool from_start);
     uint32_t tell();
+    bool eof();
 };

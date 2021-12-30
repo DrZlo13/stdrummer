@@ -13,4 +13,13 @@ uint32_t ticks_in_sec() {
 uint32_t msec() {
     return HAL_GetTick();
 }
+
+uint32_t cycle_count() {
+    return DWT->CYCCNT;
+}
+
+uint32_t cycle_freq() 
+{
+    return SystemCoreClock;
+}
 }

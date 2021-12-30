@@ -35,6 +35,10 @@ void log(std::string_view message) {
     log_send(message);
 }
 
+void newline() {
+    uart_debug.transmit("\r\n");
+}
+
 void reset() {
     uart_debug.transmit("\033[H\033[J");
 }

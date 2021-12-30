@@ -13,7 +13,7 @@ bool Dir::open(std::string_view _path) {
     normalize_path(normalized_path);
 
     do {
-        if(PathHolder::contain(&this->path)) {
+        if(PathHolder::contain(&normalized_path)) {
             _error = FR_LOCKED;
             break;
         }
