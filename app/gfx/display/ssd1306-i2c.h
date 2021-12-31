@@ -11,6 +11,7 @@ private:
     DISALLOW_COPY_AND_ASSIGN(SSD1306_I2C);
     I2C_HandleTypeDef* i2c;
     void ssd1306_command(uint8_t byte);
+    void ssd1306_command(uint8_t command, uint8_t arg);
     void ssd1306_data(uint8_t* buffer, size_t buff_size);
 
     static const uint8_t ssd1306_addr = 0x3C << 1;
@@ -23,12 +24,15 @@ public:
     SSD1306_I2C(I2C_HandleTypeDef* i2c);
     ~SSD1306_I2C();
 
-    void start(bool mirror_v, bool mirror_h, bool inverse);
+    void start(void);
     void fill(Color color);
     void flush(void);
-    bool flush_completed();
+    bool flush_completed(void);
 
     void set_pixel(int32_t x, int32_t y, Color color);
     void set_brightness(uint8_t value);
     void set_display_on(bool on);
+
+    void mirror(bool vertical, bool horizontal);
+    void invert(bool inverse);
 };

@@ -42,8 +42,8 @@ public:
      * @param mirror_h 
      * @param inverse 
      */
-    void start(bool mirror_v, bool mirror_h, bool inverse) {
-        display.start(mirror_v, mirror_h, inverse);
+    void start(void) {
+        display.start();
     }
 
     /**

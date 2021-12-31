@@ -3,8 +3,74 @@
 #include <string.h>
 #include "ssd1306-i2c.h"
 
+// #define SSD1306_EXTERNALVCC 0x01  ///< External display voltage source
+// #define SSD1306_SWITCHCAPVCC 0x02 ///< Gen. display voltage from 3.3V
+
+typedef enum {
+    SetColumnLowNibble0 = 0x00,
+    SetColumnLowNibble1 = 0x01,
+    SetColumnLowNibble2 = 0x02,
+    SetColumnLowNibble3 = 0x03,
+    SetColumnLowNibble4 = 0x04,
+    SetColumnLowNibble5 = 0x05,
+    SetColumnLowNibble6 = 0x06,
+    SetColumnLowNibble7 = 0x07,
+    SetColumnLowNibble8 = 0x08,
+    SetColumnLowNibble9 = 0x09,
+    SetColumnLowNibbleA = 0x0A,
+    SetColumnLowNibbleB = 0x0B,
+    SetColumnLowNibbleC = 0x0C,
+    SetColumnLowNibbleD = 0x0D,
+    SetColumnLowNibbleE = 0x0E,
+    SetColumnLowNibbleF = 0x0F,
+    SetColumnHighNibble0 = 0x10,
+    SetColumnHighNibble1 = 0x11,
+    SetColumnHighNibble2 = 0x12,
+    SetColumnHighNibble3 = 0x13,
+    SetColumnHighNibble4 = 0x14,
+    SetColumnHighNibble5 = 0x15,
+    SetColumnHighNibble6 = 0x16,
+    SetColumnHighNibble7 = 0x17,
+    SetColumnHighNibble8 = 0x18,
+    SetColumnHighNibble9 = 0x19,
+    SetColumnHighNibbleA = 0x1A,
+    SetColumnHighNibbleB = 0x1B,
+    SetColumnHighNibbleC = 0x1C,
+    SetColumnHighNibbleD = 0x1D,
+    SetColumnHighNibbleE = 0x1E,
+    SetColumnHighNibbleF = 0x1F,
+    SetMemoryMode = 0x20,
+    SetColumnAddress = 0x21,
+    SetPageAddress = 0x22,
+    SetStartLine = 0x40,
+    SetContrast = 0x81,
+    SetChargePump = 0x8D,
+    SetPageStartAddress = 0xB0,
+    SetSegmentRemapOn = 0xA0,
+    SetSegmentRemapOff = 0xA1,
+    AllowOnResume = 0xA4,
+    AllowOn = 0xA5,
+    InvertDisplayOff = 0xA6,
+    InvertDisplayOn = 0xA7,
+    SetMultiplexRatio = 0xA8,
+    DisplayOff = 0xAE,
+    DisplayOn = 0xAF,
+    ComScanIncrease = 0xC0,
+    ComScanDecrease = 0xC8,
+    SetOffset = 0xD3,
+    SetClockDiv = 0xD5,
+    SetPrecharge = 0xD9,
+    SetComPins = 0xDA,
+    SetVcomDetect = 0xDB,
+} SSD1306Cmd;
+
 void SSD1306_I2C::ssd1306_command(uint8_t command) {
     HAL_I2C_Mem_Write(this->i2c, ssd1306_addr, 0x00, 1, &command, 1, HAL_MAX_DELAY);
+}
+
+void SSD1306_I2C::ssd1306_command(uint8_t command, uint8_t arg) {
+    uint8_t data[2] = {command, arg};
+    HAL_I2C_Mem_Write(this->i2c, ssd1306_addr, 0x00, 1, data, 2, HAL_MAX_DELAY);
 }
 
 void SSD1306_I2C::ssd1306_data(uint8_t* buffer, size_t buff_size) {
@@ -12,8 +78,7 @@ void SSD1306_I2C::ssd1306_data(uint8_t* buffer, size_t buff_size) {
 }
 
 void SSD1306_I2C::set_brightness(uint8_t value) {
-    ssd1306_command(0x81);
-    ssd1306_command(value);
+    ssd1306_command(SetContrast, value);
 }
 
 void SSD1306_I2C::fill(Color color) {
@@ -22,10 +87,10 @@ void SSD1306_I2C::fill(Color color) {
 
 void SSD1306_I2C::flush(void) {
     // TODO back buffer
-    // set page start address for page addressing mode to 0
-    ssd1306_command(0xB0);
-    ssd1306_command(0x00);
-    ssd1306_command(0x10);
+    // set page start address to 0x00
+    ssd1306_command(SetPageStartAddress);
+    ssd1306_command(SetColumnLowNibble0);
+    ssd1306_command(SetColumnHighNibble0);
     ssd1306_data(ssd1306_buffer, ssd1306_buffer_size);
 }
 
@@ -52,10 +117,32 @@ void SSD1306_I2C::set_pixel(int32_t x, int32_t y, Color color) {
 void SSD1306_I2C::set_display_on(bool on) {
     if(on) {
         // Display on
-        ssd1306_command(0xAF);
+        ssd1306_command(DisplayOn);
     } else {
         // Display off
-        ssd1306_command(0xAE);
+        ssd1306_command(DisplayOff);
+    }
+}
+
+void SSD1306_I2C::mirror(bool vertical, bool horizontal) {
+    if(vertical) {
+        ssd1306_command(ComScanIncrease);
+    } else {
+        ssd1306_command(ComScanDecrease);
+    }
+
+    if(horizontal) {
+        ssd1306_command(SetSegmentRemapOn);
+    } else {
+        ssd1306_command(SetSegmentRemapOff);
+    }
+}
+
+void SSD1306_I2C::invert(bool inverse) {
+    if(inverse) {
+        ssd1306_command(InvertDisplayOn);
+    } else {
+        ssd1306_command(InvertDisplayOff);
     }
 }
 
@@ -66,119 +153,48 @@ SSD1306_I2C::SSD1306_I2C(I2C_HandleTypeDef* i2c) {
 SSD1306_I2C::~SSD1306_I2C() {
 }
 
-void SSD1306_I2C::start(bool mirror_v, bool mirror_h, bool inverse) {
-    // Wait for the screen to boot
-    HAL_Delay(100);
+void SSD1306_I2C::start() {
+    const bool external_voltage_supplied = false;
 
-    // Display off
-    set_display_on(false);
+    ssd1306_command(DisplayOff);
+    ssd1306_command(SetClockDiv, 0x80);
+    ssd1306_command(SetMultiplexRatio, height - 1);
 
-    //Set Memory Addressing Mode
-    ssd1306_command(0x20);
-
-    // 00b,Horizontal Addressing Mode; 01b,Vertical Addressing Mode;
-    // 10b,Page Addressing Mode (RESET); 11b,Invalid
-    ssd1306_command(0x00);
-
-    //Set Page Start Address for Page Addressing Mode,0-7
-    ssd1306_command(0xB0);
-
-    if(mirror_v) {
-        // Mirror vertically
-        ssd1306_command(0xC0);
+    ssd1306_command(SetOffset, 0x00);
+    ssd1306_command(SetStartLine | 0x0);
+    if(external_voltage_supplied) {
+        // display voltage supplied externally
+        ssd1306_command(SetChargePump, 0x10);
     } else {
-        //Set COM Output Scan Direction
-        ssd1306_command(0xC8);
+        // display voltage generated by charge pump from vcc
+        ssd1306_command(SetChargePump, 0x14);
     }
 
-    ssd1306_command(0x00); //---set low column address
-    ssd1306_command(0x10); //---set high column address
-    ssd1306_command(0x40); //--set start line address - CHECK
+    ssd1306_command(SetMemoryMode, 0x00);
+    ssd1306_command(SetSegmentRemapOff);
+    ssd1306_command(ComScanDecrease);
 
-    set_brightness(0xFF);
-
-    if(mirror_h) {
-        // Mirror horizontally
-        ssd1306_command(0xA0);
+    if((width == 128) && (height == 32)) {
+        ssd1306_command(SetComPins, 0x02);
+        ssd1306_command(SetContrast, 0x8F);
+    } else if((width == 128) && (height == 64)) {
+        ssd1306_command(SetComPins, 0x12);
+        ssd1306_command(SetContrast, external_voltage_supplied ? 0x9F : 0xCF);
+    } else if((width == 96) && (height == 16)) {
+        ssd1306_command(SetComPins, 0x2);
+        ssd1306_command(SetContrast, external_voltage_supplied ? 0x10 : 0xAF);
     } else {
-        //--set segment re-map 0 to 127 - CHECK
-        ssd1306_command(0xA1);
+        core_crash("Unknown display");
     }
 
-    if(inverse) {
-        // set inverse color
-        ssd1306_command(0xA7);
-    } else {
-        // set normal color
-        ssd1306_command(0xA6);
-    }
+    ssd1306_command(SetPrecharge, external_voltage_supplied ? 0x22 : 0xF1);
+    ssd1306_command(SetVcomDetect, 0x40);
+    ssd1306_command(AllowOnResume);
+    ssd1306_command(InvertDisplayOff);
+    ssd1306_command(DisplayOn);
 
-    // Set multiplex ratio.
-    if(height == 128) {
-        // Found in the Luma Python lib for SH1106.
-        ssd1306_command(0xFF);
-    } else {
-        // set multiplex ratio(1 to 64) - CHECK
-        ssd1306_command(0xA8);
-    }
-
-    switch(height) {
-    case 32:
-        ssd1306_command(0x1F);
-        break;
-    case 64:
-        ssd1306_command(0x3F);
-        break;
-    case 128:
-        // Seems to work for 128px high displays too.
-        ssd1306_command(0x3F);
-        break;
-    default:
-        core_crash("Only 32, 64, or 128 lines of height are supported!");
-        break;
-    }
-
-    // 0xA4 = Output follows RAM content; 0xA5 = Output ignores RAM content
-    ssd1306_command(0xA4);
-
-    // set display offset - CHECK
-    ssd1306_command(0xD3);
-    // not offset
-    ssd1306_command(0x00);
-
-    ssd1306_command(0xD5); //--set display clock divide ratio/oscillator frequency
-    ssd1306_command(0xF0); //--set divide ratio
-
-    ssd1306_command(0xD9); //--set pre-charge period
-    ssd1306_command(0x22); //
-
-    ssd1306_command(0xDA); //--set com pins hardware configuration - CHECK
-
-    switch(height) {
-    case 32:
-        ssd1306_command(0x02);
-        break;
-    case 64:
-        ssd1306_command(0x12);
-        break;
-    case 128:
-        ssd1306_command(0x12);
-        break;
-    default:
-        core_crash("Only 32, 64, or 128 lines of height are supported!");
-        break;
-    }
-
-    ssd1306_command(0xDB); //--set vcomh
-    ssd1306_command(0x20); //0x20,0.77xVcc
-
-    ssd1306_command(0x8D); //--set DC-DC enable
-    ssd1306_command(0x14); //
-    set_display_on(true);
-
-    // Clear screen
-    fill(Color::White);
-
-    // Flush buffer to screen
+    fill(Color::Black);
     flush();
+    while(!flush_completed()) {
+    }
 }
