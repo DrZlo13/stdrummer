@@ -75,22 +75,20 @@ bool WavFile::open(std::string_view path) {
             break;
         }
 
-        std::string str_fmt = fmt::format(
+        Log::info(fmt::format(
             "tag: {:#04x}, ch: {}, smplrate: {}, bps: {}, bits: {}",
             format.tag,
             format.channels,
             format.sample_rate,
             format.byte_per_sec,
-            format.bits_per_sample);
-        Log::info(str_fmt);
+            format.bits_per_sample));
 
         wav_channels = format.channels;
         wav_sample_rate = format.sample_rate;
         wav_data_start = file.tell();
         wav_data_end = wav_data_start + data.size;
 
-        str_fmt = fmt::format("data: {} - {}", wav_data_start, wav_data_end);
-        Log::info(str_fmt);
+        Log::info(fmt::format("data: {} - {}", wav_data_start, wav_data_end));
 
         result = true;
     } while(false);
@@ -105,8 +103,6 @@ bool WavFile::close() {
 }
 
 void WavFile::read(int16_t* data, uint16_t size) {
-    uint32_t start = HalTime::cycle_count();
-
     uint8_t* data_p = reinterpret_cast<uint8_t*>(data);
     int32_t to_read = size;
 
@@ -118,9 +114,6 @@ void WavFile::read(int16_t* data, uint16_t size) {
             rewind();
         }
     }
-
-    // Log::info(
-    //     fmt::format("{}us", (HalTime::cycle_count() - start) / (HalTime::cycle_freq() / 1000000)));
 }
 
 void WavFile::rewind() {

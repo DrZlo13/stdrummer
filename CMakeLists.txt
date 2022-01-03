@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 3.7)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # specify cross compilers and tools
-set(TOOLCHAIN_BIN_PATH "C:/work/cmake-stm32/arm_toolchain/gcc-arm-none-eabi-10-2020-q4-major/bin")
-set(OPENOCD_PATH "C:/work/cmake-stm32/arm_toolchain/GNU MCU Eclipse/OpenOCD/0.10.0-15")
+set(TOOLCHAIN_BIN_PATH "C:/work/cmake-stm32/toolchain/gcc-arm-none-eabi-10-2020-q4-major/bin")
+set(OPENOCD_PATH "C:/work/cmake-stm32/toolchain/GNU MCU Eclipse/OpenOCD/0.10.0-15")
 set(ST_CUBEPROG_PATH "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin")
 
 set(STM32_TARGET_TRIPLET arm-none-eabi)
@@ -40,49 +40,26 @@ include_directories("${CMAKE_SOURCE_DIR}/app/filesystem")
 
 file(GLOB_RECURSE CORE_SOURCES "app/*.c" "app/*.cpp")
 
-file(GLOB U8G2_SOURCES 
-"lib/u8g2/csrc/u8x8_d_st7565.c"
-"lib/u8g2/csrc/u8g2_d_setup.c"
-"lib/u8g2/csrc/u8g2_intersection.c"
-"lib/u8g2/csrc/u8g2_setup.c"
-"lib/u8g2/csrc/u8g2_d_memory.c"
-"lib/u8g2/csrc/u8x8_cad.c"
-"lib/u8g2/csrc/u8x8_byte.c"
-"lib/u8g2/csrc/u8x8_gpio.c"
-"lib/u8g2/csrc/u8x8_display.c"
-"lib/u8g2/csrc/u8x8_setup.c"
-"lib/u8g2/csrc/u8g2_hvline.c"
-"lib/u8g2/csrc/u8g2_ll_hvline.c"
-"lib/u8g2/csrc/u8g2_circle.c"
-"lib/u8g2/csrc/u8g2_box.c"
-"lib/u8g2/csrc/u8g2_buffer.c"
-"lib/u8g2/csrc/u8g2_font.c"
-"lib/u8g2/csrc/u8g2_fonts.c"
-"lib/u8g2/csrc/u8x8_8x8.c"
-"lib/u8g2/csrc/u8g2_bitmap.c"
-"lib/u8g2/csrc/u8g2_line.c"
-)
-
 set(SOURCES
-${SOURCES}
-${CORE_SOURCES}
-${U8G2_SOURCES}
+    ${SOURCES}
+    ${CORE_SOURCES}
+    ${U8G2_SOURCES}
 )
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 
 target_compile_options(${PROJECT_NAME}.elf PRIVATE 
--mcpu=cortex-m4
--Og
--g
--Wall
--ffunction-sections
--fdata-sections
--fstack-usage
--fno-math-errno
--MMD
--MP
---specs=nano.specs
+    -mcpu=cortex-m4
+    -Og
+    -g
+    -Wall
+    -ffunction-sections
+    -fdata-sections
+    -fstack-usage
+    -fno-math-errno
+    -MMD
+    -MP
+    --specs=nano.specs
     -mfpu=fpv4-sp-d16
     -mfloat-abi=hard
     -mthumb
@@ -123,6 +100,7 @@ target_link_options(${PROJECT_NAME}.elf PRIVATE
 )
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/fmt")
+
 target_compile_definitions(fmt
   PUBLIC
   FMT_STATIC_THOUSANDS_SEPARATOR=0
@@ -131,31 +109,14 @@ target_compile_definitions(fmt
   FMT_USE_LONG_DOUBLE=0
   FMT_REDUCE_INT_INSTANTIATIONS=0
 )
+
 target_compile_options(fmt PRIVATE 
     -mcpu=cortex-m4
-    -Og
-    -g
-    -Wall
-    -ffunction-sections
-    -fdata-sections
-    -fstack-usage
-    -fno-math-errno
-    -MMD
-    -MP
-    --specs=nano.specs
     -mfpu=fpv4-sp-d16
     -mfloat-abi=hard
     -mthumb
-    -u _printf_float
-    $<$<COMPILE_LANGUAGE:C>:-std=gnu2x>
-    $<$<COMPILE_LANGUAGE:C>:-Wenum-conversion>
-    $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++20>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-threadsafe-statics>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-rtti>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-use-cxa-atexit>
-    $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions>
-    $<$<COMPILE_LANGUAGE:CXX>:-Wno-volatile>
 )
+
 target_link_libraries(${PROJECT_NAME}.elf PRIVATE fmt)
 
 set(COMMON_FLAGS
@@ -174,18 +135,14 @@ execute_process(
     OUTPUT_VARIABLE GIT_BRANCH
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-string(TIMESTAMP BUILD_DATE "%Y-%m-%d %H:%M:%S")
-
 set(INFO_FLAGS
     GIT_BRANCH="${GIT_BRANCH}"
     GIT_COMMIT="${GIT_COMMIT}"
-    #BUILD_DATE="${BUILD_DATE}"
     TARGET=${FTARGET}
 )
 
 message(STATUS "Branch: ${GIT_BRANCH}")
 message(STATUS "Commit: ${GIT_COMMIT}")
-message(STATUS "Date  : ${BUILD_DATE}")
 
 target_compile_definitions(${PROJECT_NAME}.elf PRIVATE 
     ${TARGET_FLAGS}

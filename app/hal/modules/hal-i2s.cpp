@@ -2,8 +2,7 @@
 #include <iterator>
 #include <algorithm>
 #include "../hal.h"
-
-#include <math.h>
+#include <string.h>
 
 extern I2S_HandleTypeDef hi2s1;
 
@@ -40,14 +39,7 @@ extern "C" void HAL_I2S_TxHalfCpltCallback(I2S_HandleTypeDef* hi2s) {
 
 HalI2S::HalI2S(I2S_HandleTypeDef* i2s) {
     this->i2s = i2s;
-    const float pi = 3.14159265f;
-    for(size_t i = 0; i < this->buffer_size; i++) {
-        // saw
-        buffer[i] = (i / 2);
-
-        // sine
-        // buffer[i] = sin(i * (pi / 128)) * (UINT_LEAST16_MAX / 2);
-    }
+    memset(buffer, 0, buffer_size * sizeof(buffer[0]));
 }
 
 HalI2S::~HalI2S() {
