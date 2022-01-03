@@ -72,8 +72,14 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define LED_PIN_Pin LL_GPIO_PIN_13
 #define LED_PIN_GPIO_Port GPIOC
-#define SD_DET_Pin LL_GPIO_PIN_3
-#define SD_DET_GPIO_Port GPIOA
+#define ENC_BUTTON_Pin LL_GPIO_PIN_15
+#define ENC_BUTTON_GPIO_Port GPIOC
+#define SD_DETECT_Pin LL_GPIO_PIN_3
+#define SD_DETECT_GPIO_Port GPIOA
+#define ENC_B_Pin LL_GPIO_PIN_6
+#define ENC_B_GPIO_Port GPIOB
+#define ENC_A_Pin LL_GPIO_PIN_7
+#define ENC_A_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
