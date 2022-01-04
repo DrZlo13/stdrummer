@@ -4,6 +4,8 @@
 
 extern "C" void Error_Handler(void);
 
+namespace Core {
+
 //-----------------------------cmsis_os2.c-------------------------------
 // helpers to get isr context
 // get arch
@@ -223,12 +225,12 @@ static void transmit_interrupt_info() {
     uart_debug.transmit(LOG_COLOR_RESET);
 }
 
-static void transmit_heap_info() {
+static void transmit_heap_info(const char* log_color = LOG_COLOR_E) {
     char tmp_str[] = "-2147483648";
 
     transmit_current_tick();
-    uart_debug.transmit(" " LOG_COLOR_E);
-    uart_debug.transmit("[heap] ");
+    uart_debug.transmit(log_color);
+    uart_debug.transmit(" [heap] ");
     uart_debug.transmit(LOG_COLOR_RESET);
 
     uart_debug.transmit("total ");
@@ -246,14 +248,21 @@ static void transmit_heap_info() {
     uart_debug.transmit("\r\n");
 }
 
-static void transmit_stack_info() {
+static void transmit_stack_info(const char* task_name, const char* log_color = LOG_COLOR_E) {
     // TaskStatus_t task_status;
     // vTaskGetInfo(NULL, &task_status, pdTRUE, eInvalid);
     char tmp_str[] = "-2147483648";
 
     transmit_current_tick();
-    uart_debug.transmit(" " LOG_COLOR_E);
-    uart_debug.transmit("[stack] ");
+    uart_debug.transmit(log_color);
+
+    uart_debug.transmit(" [");
+    if(task_name != NULL) {
+        uart_debug.transmit(task_name);
+    } else {
+        uart_debug.transmit("???");
+    }
+    uart_debug.transmit("][stack] ");
     uart_debug.transmit(LOG_COLOR_RESET);
 
     uart_debug.transmit("watermark ");
@@ -263,18 +272,18 @@ static void transmit_stack_info() {
     uart_debug.transmit("\r\n");
 }
 
-void core_crash(const char* message) {
+void crash(const char* message) {
     transmit_crash_message();
     transmit_heap_info();
 
     if(task_is_isr_context()) {
         transmit_interrupt_info();
     } else {
-        transmit_stack_info();
+        const char* name = osThreadGetName(osThreadGetId());
+        transmit_stack_info(name);
 
         transmit_current_tick();
         uart_debug.transmit(" " LOG_COLOR_E);
-        const char* name = osThreadGetName(osThreadGetId());
         if(name == NULL) {
             uart_debug.transmit("[???] ");
         } else {
@@ -293,4 +302,19 @@ void core_crash(const char* message) {
     }
 
     Error_Handler();
+}
+
+void log_stack() {
+    const char* name = osThreadGetName(osThreadGetId());
+    transmit_stack_info(name, LOG_COLOR_I);
+}
+
+void log_heap() {
+    transmit_heap_info(LOG_COLOR_I);
+}
+
+}
+
+extern "C" void core_crash(const char* message) {
+    Core::crash(message);
 }

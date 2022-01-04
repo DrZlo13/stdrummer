@@ -2,9 +2,11 @@
 #include <stdlib.h>
 
 #ifdef __cplusplus
-
-void core_crash(const char* message = NULL);
-
+namespace Core {
+void crash(const char* message = NULL);
+void log_stack();
+void log_heap();
+}
 #else
 
 void core_crash(const char* message);

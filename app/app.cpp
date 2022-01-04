@@ -21,7 +21,7 @@ void hal_init(void) {
     gpio_button.config(HalGpio::Mode::Input, HalGpio::Pull::Up);
     uart_debug.config(115200);
 
-    gpio_led.write(false);
+    gpio_led.write(true);
 }
 
 WavFile wav;
@@ -38,7 +38,6 @@ void app_main(void* arg) {
     hal_init();
     Log::reset();
     Log::info("System start at " GIT_BRANCH "/" GIT_COMMIT);
-
     // while (1)
     // {
     //     HalTime::delay(1000);
@@ -101,7 +100,7 @@ void app_main(void* arg) {
                 memset(i2s_dac.get_buffer_first_half(), 0, i2s_dac.get_buffer_half_size());
                 memset(i2s_dac.get_buffer_second_half(), 0, i2s_dac.get_buffer_half_size());
             } else {
-                gpio_led.write(true);
+                gpio_led.write(false);
                 switch(event) {
                 case EventFullCplt:
                     wav.read(i2s_dac.get_buffer_second_half(), i2s_dac.get_buffer_half_size());
@@ -110,7 +109,7 @@ void app_main(void* arg) {
                     wav.read(i2s_dac.get_buffer_first_half(), i2s_dac.get_buffer_half_size());
                     break;
                 }
-                gpio_led.write(false);
+                gpio_led.write(true);
             }
         }
     }
