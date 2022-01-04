@@ -25,9 +25,6 @@ private:
 public:
     typedef Display::Color Color;
 
-    const size_t width = display.width;
-    const size_t height = display.height;
-
     template <typename... Args>
     GFX(Args&&... args)
         : display(args...) {
