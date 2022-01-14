@@ -1,6 +1,6 @@
 set(TARGET "target/black-pill")
 
-set(LINKER_SCRIPT ${PROJECT_SOURCE_DIR}/${TARGET}/STM32F411CEUx_FLASH.ld PARENT_SCOPE)
+set(LINKER_SCRIPT ${PROJECT_SOURCE_DIR}/${TARGET}/STM32F411CEUx_FLASH_OS_HEAP.ld PARENT_SCOPE)
 
 # All relative to project root
 set(TARGET_SOURCE_DIR ${CMAKE_SOURCE_DIR}/${TARGET})
@@ -60,7 +60,7 @@ file(GLOB TARGET_SOURCES
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/tasks.c
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/timers.c
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2/cmsis_os2.c
-	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
+	# ${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/MemMang/heap_4.c
 	${TARGET_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
 
 	${TARGET_SOURCE_DIR}/Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c.c

@@ -93,10 +93,10 @@ target_link_options(${PROJECT_NAME}.elf PRIVATE
     -Wl,--start-group -lstdc++ -lsupc++
     -Wl,--end-group
     -Wl,--print-memory-usage -T ${LINKER_SCRIPT}
-    #-Wl,--wrap,_malloc_r
-    #-Wl,--wrap,_free_r
-    #-Wl,--wrap,_calloc_r
-    #-Wl,--wrap,_realloc_r
+    -Wl,--wrap,_malloc_r
+    -Wl,--wrap,_free_r
+    -Wl,--wrap,_calloc_r
+    -Wl,--wrap,_realloc_r
 )
 
 add_subdirectory("${CMAKE_SOURCE_DIR}/lib/fmt")
