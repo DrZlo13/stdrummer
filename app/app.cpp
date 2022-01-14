@@ -38,12 +38,13 @@ void app_main(void* arg) {
     hal_init();
     Log::reset();
     Log::info("System start at " GIT_BRANCH "/" GIT_COMMIT);
-    // while (1)
-    // {
-    //     HalTime::delay(1000);
-    // }
 
-    // gfx.start();
+    gfx.start();
+    gfx.set_font(&font_basic_6x8);
+    gfx.set_cursor(0, 0);
+    gfx.draw_string(GIT_BRANCH "/" GIT_COMMIT, Color::White, Color::Black);
+    gfx.flush();
+
     // int16_t angle = 0;
     // const float pi = 3.1415f;
 
@@ -59,10 +60,10 @@ void app_main(void* arg) {
 
     //     gfx.fill(color_back);
     //     gfx.draw_line(
-    //         64 + sin(pi / 180.0f * (float)angle) * 32.0f,
-    //         32 + cos(pi / 180.0f * (float)angle) * 32.0f,
-    //         64 - sin(pi / 180.0f * (float)angle) * 32.0f,
-    //         32 - cos(pi / 180.0f * (float)angle) * 32.0f,
+    //         gfx.width / 2 + sin(pi / 180.0f * (float)angle) * gfx.height / 2,
+    //         gfx.height / 2 + cos(pi / 180.0f * (float)angle) * gfx.height / 2,
+    //         gfx.width / 2 - sin(pi / 180.0f * (float)angle) * gfx.height / 2,
+    //         gfx.height / 2 - cos(pi / 180.0f * (float)angle) * gfx.height / 2,
     //         color_front);
 
     //     gfx.set_font(&font_basic_6x8);
