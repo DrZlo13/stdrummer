@@ -38,14 +38,6 @@ void* calloc(size_t count, size_t size) {
     return ptr;
 }
 
-size_t memmgr_get_free_heap(void) {
-    return xPortGetFreeHeapSize();
-}
-
-size_t memmgr_get_minimum_free_heap(void) {
-    return xPortGetMinimumEverFreeHeapSize();
-}
-
 void* __wrap__malloc_r(struct _reent* r, size_t size) {
     void* pointer = malloc(size);
     return pointer;

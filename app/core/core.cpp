@@ -273,10 +273,13 @@ static void transmit_stack_info(const char* task_name, const char* log_color = L
 }
 
 void crash(const char* message) {
+    bool is_isr = task_is_isr_context();
+    __disable_irq();
+
     transmit_crash_message();
     transmit_heap_info();
 
-    if(task_is_isr_context()) {
+    if(is_isr) {
         transmit_interrupt_info();
     } else {
         const char* name = osThreadGetName(osThreadGetId());

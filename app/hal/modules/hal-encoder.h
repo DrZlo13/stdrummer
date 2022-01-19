@@ -11,6 +11,6 @@ public:
     HalEncoder(TIM_HandleTypeDef* tim);
     ~HalEncoder();
     void start();
-    uint32_t get();
+    int32_t get();
     void reset();
 };

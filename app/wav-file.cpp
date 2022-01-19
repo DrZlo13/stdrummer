@@ -93,8 +93,6 @@ bool WavFile::open(std::string_view path) {
         result = true;
     } while(false);
 
-    Log::newline();
-
     return result;
 }
 
