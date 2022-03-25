@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <fmt/format.h>
+#include <fmt/compile.h>
 
 #define LOG_COLOR(clr) "\033[0;" clr "m"
 #define LOG_COLOR_RESET "\033[0m"
@@ -25,8 +27,29 @@ void info(std::string_view message);
 
 void log(std::string_view message);
 
+void plain(std::string_view message);
+
 void newline();
 
 void reset();
 
+template <typename... Args> void error(fmt::format_string<Args...> message, Args&&... args) {
+    Log::error(fmt::format(message, std::forward<Args>(args)...));
+}
+
+template <typename... Args> void warn(fmt::format_string<Args...> message, Args&&... args) {
+    Log::warn(fmt::format(message, std::forward<Args>(args)...));
+}
+
+template <typename... Args> void info(fmt::format_string<Args...> message, Args&&... args) {
+    Log::info(fmt::format(message, std::forward<Args>(args)...));
+}
+
+template <typename... Args> void log(fmt::format_string<Args...> message, Args&&... args) {
+    Log::log(fmt::format(message, std::forward<Args>(args)...));
+}
+
+template <typename... Args> void plain(fmt::format_string<Args...> message, Args&&... args) {
+    Log::plain(fmt::format(message, std::forward<Args>(args)...));
+}
 }

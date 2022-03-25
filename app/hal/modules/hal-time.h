@@ -8,4 +8,10 @@ uint32_t ticks_in_sec();
 uint32_t msec();
 uint32_t cycle_count();
 uint32_t cycle_freq();
+
+void delay(uint32_t ms);
+void delay_us(uint32_t us);
+
+void mark();
+uint32_t us_from_mark();
 };
