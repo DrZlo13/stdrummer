@@ -5,7 +5,7 @@ cmake_minimum_required(VERSION 3.7)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # specify cross compilers and tools
-set(TOOLCHAIN_BIN_PATH "C:/work/cmake-stm32/toolchain/gcc-arm-none-eabi-10-2020-q4-major/bin")
+set(TOOLCHAIN_BIN_PATH "C:/work/cmake-stm32/toolchain/gcc-arm-none-eabi-10.3-2021.10/bin")
 set(OPENOCD_PATH "C:/work/cmake-stm32/toolchain/GNU MCU Eclipse/OpenOCD/0.10.0-15")
 set(ST_CUBEPROG_PATH "C:/Program Files/STMicroelectronics/STM32Cube/STM32CubeProgrammer/bin")
 
@@ -64,8 +64,8 @@ target_compile_options(${PROJECT_NAME}.elf PRIVATE
     -mfloat-abi=hard
     -mthumb
     -u _printf_float
-    #-Werror
-    #-Wextra
+    -fno-strict-aliasing
+    -Werror
     $<$<COMPILE_LANGUAGE:C>:-std=gnu2x>
     $<$<COMPILE_LANGUAGE:C>:-Wenum-conversion>
     $<$<COMPILE_LANGUAGE:CXX>:-std=gnu++20>
@@ -88,6 +88,7 @@ target_link_options(${PROJECT_NAME}.elf PRIVATE
     -mfloat-abi=hard
     -mthumb
     -fno-math-errno
+    -fno-strict-aliasing
     -u _printf_float
     -fstack-usage
     -Wl,--start-group -lstdc++ -lsupc++
@@ -108,13 +109,7 @@ target_compile_definitions(fmt
   FMT_USE_DOUBLE=0
   FMT_USE_LONG_DOUBLE=0
   FMT_REDUCE_INT_INSTANTIATIONS=0
-)
-
-target_compile_options(fmt PRIVATE 
-    -mcpu=cortex-m4
-    -mfpu=fpv4-sp-d16
-    -mfloat-abi=hard
-    -mthumb
+  FMT_HEADER_ONLY
 )
 
 target_link_libraries(${PROJECT_NAME}.elf PRIVATE fmt)

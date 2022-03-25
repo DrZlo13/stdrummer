@@ -64,6 +64,7 @@ const char* File::error_text() {
 
 uint32_t File::read(uint8_t* data, uint32_t data_size) {
     UINT was_read = 0;
+
     _error = f_read(&_file, data, data_size, &was_read);
     return was_read;
 }

@@ -280,6 +280,11 @@ size_t xPortGetFreeHeapSize(void) {
 size_t xPortGetMinimumEverFreeHeapSize(void) {
     return xMinimumEverFreeBytesRemaining;
 }
+
+size_t xPortGetTotalHeapSize(void) {
+    size_t xTotalHeapSize = (size_t)&__heap_end__ - (size_t)&__heap_start__;
+    return xTotalHeapSize;
+}
 /*-----------------------------------------------------------*/
 
 void vPortInitialiseBlocks(void) {

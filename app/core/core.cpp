@@ -3,6 +3,7 @@
 #include "log.h"
 
 extern "C" void Error_Handler(void);
+extern "C" size_t xPortGetTotalHeapSize(void);
 
 namespace Core {
 
@@ -234,7 +235,7 @@ static void transmit_heap_info(const char* log_color = LOG_COLOR_E) {
     uart_debug.transmit(LOG_COLOR_RESET);
 
     uart_debug.transmit("total ");
-    itoa(configTOTAL_HEAP_SIZE, tmp_str, 10);
+    itoa(xPortGetTotalHeapSize(), tmp_str, 10);
     uart_debug.transmit(tmp_str);
 
     uart_debug.transmit(", free ");

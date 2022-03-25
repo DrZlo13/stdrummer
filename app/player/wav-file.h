@@ -1,3 +1,4 @@
+#pragma once
 #include <filesystem.h>
 
 class WavFile {
@@ -17,6 +18,13 @@ public:
     bool open(std::string_view path);
     bool close();
 
-    void read(int16_t* data, uint16_t data_bytes);
-    void rewind();
+    uint32_t read(uint8_t* data, uint16_t data_bytes);
+
+    void read_looping(uint8_t* data, uint16_t data_bytes);
+
+    void rewind(uint32_t offset = 0);
+    bool eof();
+    bool end();
+    uint32_t length_in_bytes();
+    uint32_t current_pos();
 };

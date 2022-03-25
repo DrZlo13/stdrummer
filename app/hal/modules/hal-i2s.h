@@ -21,7 +21,7 @@ public:
     void set_complete_callback(Callback cb, void* ctx);
     void set_half_complete_callback(Callback cb, void* ctx);
 
-    size_t get_buffer_half_size(void) {
+    static constexpr size_t get_buffer_half_size(void) {
         return (buffer_size / 2) * sizeof(int16_t);
     }
 

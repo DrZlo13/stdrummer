@@ -31,6 +31,10 @@ void log(std::string_view message) {
     log_send(message);
 }
 
+void plain(std::string_view message) {
+    uart_debug.transmit(message);
+}
+
 void newline() {
     uart_debug.transmit("\r\n");
 }
